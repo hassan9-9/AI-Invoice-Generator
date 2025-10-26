@@ -1,0 +1,46 @@
+# cd frontend
+
+# npm create vite@latest
+ 
+# add tailwind
+
+# add a font (used Urbanist)
+
+# organise the sturcture (files, components, pages etc..)
+
+# npm install react-router-dom react-hot-toast axios lucide-react moment 
+
+
+
+
+# cd backend
+npm init -y
+create server.js
+
+initial changes in Package.json:
+
+{
+  "name": "invoice-generator-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}
+
+
+
+# npm install express bcryptjs cors dotenv jsonwebtoken mongoose multer nodemon
+# npm install @google/genai
+# organise the sturcture (controllers, middlewares, models routes, env, config)
+
+# JWT secrets:
+# node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+
+#npm install @google/generative-ai
