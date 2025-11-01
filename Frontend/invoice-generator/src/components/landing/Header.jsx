@@ -6,7 +6,7 @@ import Button from "../ui/Button";
 import { Link } from "react-router-dom";
 
 const Header = () => {
-  const isAuthenticated = true;
+  const isAuthenticated = false;
   const user = { name: "Alex", email: "alex@timetoprogram.com" };
   const logout = () => {};
 
