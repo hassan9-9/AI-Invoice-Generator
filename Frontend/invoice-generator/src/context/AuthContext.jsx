@@ -20,6 +20,15 @@ export const AuthProvider = ({ children }) => {
     checkAuthStatus();
   }, []);
 
+  // 🔍 Debug: log every time auth changes
+  useEffect(() => {
+    console.log("Auth status changed:", {
+      isAuthenticated,
+      user,
+      token: localStorage.getItem("token"),
+    });
+  }, [isAuthenticated, user]);
+
   const checkAuthStatus = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -38,10 +47,15 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const login = (userData, token) => {
+  // ✅ Updated version: takes an object { user, token }
+  const login = ({ user, token }) => {
+    if (!token || !user) {
+      console.error("Invalid login parameters:", { user, token });
+      return;
+    }
     localStorage.setItem("token", token);
-    localStorage.setItem("user", JSON.stringify(userData));
-    setUser(userData);
+    localStorage.setItem("user", JSON.stringify(user));
+    setUser(user);
     setIsAuthenticated(true);
   };
 

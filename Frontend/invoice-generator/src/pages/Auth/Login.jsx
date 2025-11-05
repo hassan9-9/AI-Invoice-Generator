@@ -18,73 +18,52 @@ const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [fieldErrors, setFieldErrors] = useState({
-    email: "",
-    password: "",
-  });
+  const [fieldErrors, setFieldErrors] = useState({ email: "", password: "" });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
 
-    // Clear field error when user types
-    if (fieldErrors[name]) {
-      setFieldErrors((prev) => ({
-        ...prev,
-        [name]: "",
-      }));
-    }
-
+    // Clear field error and global error when typing
+    setFieldErrors((prev) => ({ ...prev, [name]: "" }));
     if (error) setError("");
   };
 
   const handleBlur = (e) => {
     const { name, value } = e.target;
-
-    // Validate field on blur
-    if (name === "email") {
+    const validationFn =
+      name === "email" ? validateEmail : name === "password" ? validatePassword : null;
+    if (validationFn) {
       setFieldErrors((prev) => ({
         ...prev,
-        email: validateEmail(value),
-      }));
-    } else if (name === "password") {
-      setFieldErrors((prev) => ({
-        ...prev,
-        password: validatePassword(value),
+        [name]: validationFn(value),
       }));
     }
   };
 
   const isFormValid = () => {
-    const emailError = validateEmail(formData.email);
-    const passwordError = validatePassword(formData.password);
-
-    return !emailError && !passwordError && formData.email && formData.password;
+    return (
+      formData.email &&
+      formData.password &&
+      !validateEmail(formData.email) &&
+      !validatePassword(formData.password)
+    );
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isLoading) return;
 
-    // Validate all fields
+    // Validate before sending
     const emailError = validateEmail(formData.email);
     const passwordError = validatePassword(formData.password);
-
     if (emailError || passwordError) {
-      setFieldErrors({
-        email: emailError,
-        password: passwordError,
-      });
+      setFieldErrors({ email: emailError, password: passwordError });
       return;
     }
 
@@ -93,137 +72,63 @@ const Login = () => {
     setSuccess("");
 
     try {
-      console.log("🔍 Sending login request to:", API_PATHS.AUTH.LOGIN);
-      console.log("📧 Login data:", {
-        email: formData.email,
-        password: "***", // Don't log actual password
-      });
-
-      // Add timeout and better error handling
       const response = await axiosInstance.post(
         API_PATHS.AUTH.LOGIN,
         {
           email: formData.email,
           password: formData.password,
         },
-        {
-          timeout: 10000, // 10 second timeout
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+        { timeout: 10000, headers: { "Content-Type": "application/json" } }
       );
 
-      console.log("✅ Full API response:", response);
-      console.log("📊 Response data:", response.data);
-      console.log("🔢 Response status:", response.status);
+      const data = response?.data || {};
 
-      // Handle different success response formats
-      if (response.status === 200 || response.status === 201) {
-        const responseData = response.data;
+      // Handle different API response formats safely
+      const token =
+        data.token ||
+        data?.data?.token ||
+        data?.accessToken ||
+        data?.jwt ||
+        null;
+      const user =
+        data.user ||
+        data?.data?.user || {
+          id: data.id || "",
+          name: data.name || "",
+          email: formData.email,
+        };
 
-        // Format 1: Direct token in response
-        if (responseData.token) {
-          console.log("🎯 Using token format");
-          setSuccess("Login successful!");
-          login({
-            token: responseData.token,
-            user: responseData.user || {
-              id: responseData.id,
-              name: responseData.name,
-              email: formData.email,
-            },
-          });
-        }
-        // Format 2: Token in data object with success flag
-        else if (responseData.data && responseData.data.token) {
-          console.log("🎯 Using data.token format");
-          setSuccess("Login successful!");
-          login(responseData.data);
-        }
-        // Format 3: Success flag with data
-        else if (responseData.success && responseData.data) {
-          console.log("🎯 Using success.data format");
-          setSuccess("Login successful!");
-          login(responseData.data);
-        }
-        // Format 4: Simple success
-        else if (responseData.success) {
-          console.log("🎯 Using simple success format");
-          setSuccess("Login successful!");
-          login(responseData);
-        }
-        // Format 5: Assume success if we got 200/201
-        else {
-          console.log("🎯 Using fallback format");
-          setSuccess("Login successful!");
-          login(responseData);
-        }
-
-        // Redirect after success
-        setTimeout(() => {
-          navigate("/dashboard");
-        }, 1000);
+      if (token) {
+        login({ token, user });
+        setSuccess("Login successful! Redirecting...");
+        setTimeout(() => navigate("/dashboard"), 1000);
       } else {
-        console.warn("⚠️ Unexpected response status:", response.status);
-        setError(response.data?.message || "Unexpected response from server");
+        throw new Error(data.message || "Invalid server response");
       }
     } catch (err) {
-      console.error("❌ Login error details:", err);
+      console.error("❌ Login error:", err);
 
-      // Handle different error types
+      let message = "An unexpected error occurred. Please try again.";
       if (err.code === "ECONNABORTED") {
-        setError(
-          "Request timeout. Please check your connection and try again."
-        );
+        message = "Request timed out. Please check your connection.";
       } else if (err.response) {
-        // Server responded with error status
-        console.error("🚨 Server error response:", err.response);
-
-        const status = err.response.status;
-        const message = err.response.data?.message;
-
-        switch (status) {
-          case 400:
-            setError(message || "Invalid request format.");
-            break;
-          case 401:
-            setError(message || "Invalid email or password.");
-            break;
-          case 403:
-            setError(message || "Access denied.");
-            break;
-          case 404:
-            setError(message || "User not found.");
-            break;
-          case 422:
-            setError(message || "Validation failed.");
-            break;
-          case 500:
-            setError(message || "Server error. Please try again later.");
-            break;
-          default:
-            setError(message || `Login failed (${status}).`);
-        }
+        const { status, data } = err.response;
+        message =
+          data?.message ||
+          {
+            400: "Invalid request format.",
+            401: "Invalid email or password.",
+            403: "Access denied.",
+            404: "User not found.",
+            422: "Validation failed.",
+            500: "Server error. Please try again later.",
+          }[status] ||
+          `Login failed (${status}).`;
       } else if (err.request) {
-        // Request was made but no response received
-        console.error("🌐 Network error - no response:", err.request);
-        setError("Network error. Please check your internet connection.");
-      } else {
-        // Other errors (including browser extension interference)
-        console.error("⚡ Other error:", err.message);
-
-        if (
-          err.message.includes("asynchronous response") ||
-          err.message.includes("message channel closed")
-        ) {
-          setError(
-            "Browser extension interference detected. Please try in incognito mode or disable extensions."
-          );
-        } else {
-          setError("An unexpected error occurred. Please try again.");
-        }
+        message = "No response from server. Please check your connection.";
       }
+
+      setError(message);
     } finally {
       setIsLoading(false);
     }
@@ -257,7 +162,6 @@ const Login = () => {
               <input
                 name="email"
                 type="email"
-                required
                 value={formData.email}
                 onChange={handleInputChange}
                 onBlur={handleBlur}
@@ -267,6 +171,7 @@ const Login = () => {
                     : "border-gray-300 focus:ring-black"
                 }`}
                 placeholder="Enter your email"
+                autoComplete="username"
               />
             </div>
             {fieldErrors.email && (
@@ -284,7 +189,6 @@ const Login = () => {
               <input
                 name="password"
                 type={showPassword ? "text" : "password"}
-                required
                 value={formData.password}
                 onChange={handleInputChange}
                 onBlur={handleBlur}
@@ -294,10 +198,11 @@ const Login = () => {
                     : "border-gray-300 focus:ring-black"
                 }`}
                 placeholder="Enter your password"
+                autoComplete="current-password"
               />
               <button
                 type="button"
-                onClick={() => setShowPassword(!showPassword)}
+                onClick={() => setShowPassword((prev) => !prev)}
                 className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
               >
                 {showPassword ? (
@@ -314,7 +219,7 @@ const Login = () => {
             )}
           </div>
 
-          {/* Error/Success Messages */}
+          {/* Alerts */}
           {error && (
             <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
               <p className="text-red-600 text-sm">{error}</p>
@@ -350,7 +255,7 @@ const Login = () => {
         {/* Footer */}
         <div className="mt-6 pt-4 border-t border-gray-200 text-center">
           <p className="text-sm text-gray-600">
-            Don't have an account?{" "}
+            Don’t have an account?{" "}
             <button
               type="button"
               className="text-black font-medium hover:underline"

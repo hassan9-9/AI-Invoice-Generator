@@ -4,11 +4,13 @@ import ProfileDropdown from "../layout/ProfileDropdown";
 import { useNavigate } from "react-router-dom";
 import Button from "../ui/Button";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 const Header = () => {
-  const isAuthenticated = false;
-  const user = { name: "Alex", email: "alex@timetoprogram.com" };
-  const logout = () => {};
+  // const isAuthenticated = false;
+  // const user = { name: "Alex", email: "alex@timetoprogram.com" };
+  // const logout = () => {};
+  const { isAuthenticated, user, logout } = useAuth();
 
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);

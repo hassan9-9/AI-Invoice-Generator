@@ -223,10 +223,10 @@ const SignUp = () => {
 
     return (
         <div className="min-h-screen bg-white flex items-center justify-center px-4 py-8">
-            <div className="w-full max-w-sm">
+            <div className="w-full max-w-md p-8 bg-white border border-gray-200 rounded-lg shadow-lg">
                 {/* Header */}
                 <div className="text-center mb-8">
-                    <div className="w-12 h-12 bg-gradient-to-r from-blue-950 to-blue-900 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <div className="size-12 bg-gradient-to-r from-blue-950 to-blue-900 rounded-lg flex items-center justify-center mx-auto mb-4">
                         <FileText className="w-6 h-6 text-white" />
                     </div>
                     <h1 className="text-2xl font-semibold text-gray-900 mb-2">

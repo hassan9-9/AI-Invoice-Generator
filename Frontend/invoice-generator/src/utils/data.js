@@ -1,4 +1,4 @@
-import { BarChart2, FileText, Mail, Sparkles } from "lucide-react";
+import { BarChart2, FileText, Mail, Sparkles, LayoutDashboard, Plus, Users } from "lucide-react";
 
 export const FEATURES = [
   {
@@ -34,7 +34,7 @@ export const TESTIMONIALS = [
     author: "Sarah Johnson",
     title: "Freelance Graphic Designer",
     avatar:
-      "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face", 
+      "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face",
     rating: 5,
   },
   {
@@ -84,38 +84,52 @@ export const TESTIMONIALS = [
   },
 ];
 
-
 export const FAQS = [
   {
     question: "How does the AI invoice creation work?",
-    answer: "Simply paste any text that contains invoice details-like an email, a list of items, or other information-and our AI will automatically generate a professional invoice for you."
+    answer:
+      "Simply paste any text that contains invoice details-like an email, a list of items, or other information-and our AI will automatically generate a professional invoice for you.",
   },
   {
     question: "Is there a free trial available?",
-    answer: "Yes, you can try our platform for free for 14 days. If you want, we'll provide you with a personalized demo to help you get started."
+    answer:
+      "Yes, you can try our platform for free for 14 days. If you want, we'll provide you with a personalized demo to help you get started.",
   },
   {
     question: "Can I change my plan later?",
-    answer: "Of course. Our pricing scales with your company. Chat to our friendly team to discuss your options."
+    answer:
+      "Of course. Our pricing scales with your company. Chat to our friendly team to discuss your options.",
   },
   {
     question: "What is your cancellation policy?",
-    answer: "We understand that things change. You can cancel your plan at any time and we'll prorate your refund."
+    answer:
+      "We understand that things change. You can cancel your plan at any time and we'll prorate your refund.",
   },
   {
     question: "Can other info be added to an invoice?",
-    answer: "Yes, you can add notes, payment terms, and even attach files to your invoices. Everything is customizable to fit your business needs."
+    answer:
+      "Yes, you can add notes, payment terms, and even attach files to your invoices. Everything is customizable to fit your business needs.",
   },
   {
     question: "How does billing work?",
-    answer: "Plans are per workspace, not per account. You can upgrade one workspace, and still have other workspaces on different plans."
+    answer:
+      "Plans are per workspace, not per account. You can upgrade one workspace, and still have other workspaces on different plans.",
   },
   {
     question: "Is my data secure?",
-    answer: "Absolutely. We use industry-standard encryption and security practices to ensure your data is safe and secure."
+    answer:
+      "Absolutely. We use industry-standard encryption and security practices to ensure your data is safe and secure.",
   },
   {
     question: "How do I change my account email?",
-    answer: "You can change your account email in the account settings. If you need assistance, our support team is here to help."
-  }
+    answer:
+      "You can change your account email in the account settings. If you need assistance, our support team is here to help.",
+  },
+];
+
+export const NAVIGATION_MENU = [
+  { id: "dashboard", name: "Dashboard", icon: LayoutDashboard },
+  { id: "Invoice3", name: "Invoices", icon: FileText },
+  { id: "Invoices/new", name: "Create Invoice", icon: Plus },
+  { id: "profile", name: "Profile", icon: Users },
 ];
