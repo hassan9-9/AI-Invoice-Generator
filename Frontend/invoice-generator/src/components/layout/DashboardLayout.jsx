@@ -155,10 +155,13 @@ const DashboardLayout = ({ children, activeMenu }) => {
                                     <X className="h-5 w-5 text-gray-600" />
                                 ) : (
                                     <Menu className="h-5 w-5 text-gray-600" />
+                                    
                                 )}
                             </button>
+                            
+
                         )}
-                        <div>
+                        <div className="">
                             <h1 className="text-base font-semibold text-gray-900">
                                 Welcome back, {user?.name}!
                             </h1>

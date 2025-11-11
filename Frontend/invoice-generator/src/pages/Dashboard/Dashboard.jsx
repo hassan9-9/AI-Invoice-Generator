@@ -86,7 +86,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 p-6">
       {/* Header */}
       <div>
         <h2 className="text-xl font-semibold text-slate-900">Dashboard</h2>
@@ -164,7 +164,7 @@ const Dashboard = () => {
                     onClick={() => navigate(`/invoices/${invoice.id}`)}
                   >
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900">
-                      {invoice.clientName}
+                      {invoice?.clientName || "N/A"}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-900">
                       {/* ${invoice.total.toFixed(2)} */}
