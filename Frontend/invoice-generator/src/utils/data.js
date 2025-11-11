@@ -129,7 +129,7 @@ export const FAQS = [
 
 export const NAVIGATION_MENU = [
   { id: "dashboard", name: "Dashboard", icon: LayoutDashboard },
-  { id: "Invoice3", name: "Invoices", icon: FileText },
-  { id: "Invoices/new", name: "Create Invoice", icon: Plus },
+  { id: "invoices", name: "Invoices", icon: FileText },
+  { id: "invoices/new", name: "Create Invoice", icon: Plus },
   { id: "profile", name: "Profile", icon: Users },
 ];
