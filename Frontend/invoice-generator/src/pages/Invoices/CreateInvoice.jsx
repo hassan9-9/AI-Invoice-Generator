@@ -166,7 +166,7 @@ const CreateInvoice = ({ existingInvoice, onSave }) => {
         // Otherwise, use direct API call
         const endpoint = existingInvoice
           ? `${API_PATHS.INVOICE.UPDATE_INVOICE}/${existingInvoice._id}`
-          : API_PATHS.INVOICE.CREATE_INVOICE;
+          : API_PATHS.INVOICE.CREATE;
 
         const method = existingInvoice ? "put" : "post";
 

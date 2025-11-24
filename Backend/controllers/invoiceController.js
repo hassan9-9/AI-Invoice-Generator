@@ -46,6 +46,7 @@ exports.createInvoice = async (req, res) => {
     await invoice.save();
     res.status(201).json(invoice);
   } catch (error) {
+     console.error("CREATE INVOICE ERROR:", error);
     res.status(500).json({
       message: "Error creating invoice",
       error: error.message,
@@ -66,6 +67,7 @@ exports.getInvoices = async (req, res) => {
     );
     res.json(invoices);
   } catch (error) {
+     console.error("GET INVOICES ERROR:", error);
     res.status(500).json({
       message: "Error fetching invoices",
       error: error.message,
@@ -83,9 +85,17 @@ exports.getInvoiceById = async (req, res) => {
         if (!invoice) return res.status(404).json({
             message: "Invoice not found"
         });
+        // Security fix: Ensure the invoice belongs to the logged-in user
+        if (invoice.user._id.toString() !== req.user._id) {
+            return res.status(401).json({
+                message: "Not authorized"
+            });
+        }
         res.json(invoice);
     } catch (error) {
+        console.error("GET INVOICE BY ID ERROR:", error);
         res.status(500).json({
+          
             message: "Error fetching invoice",
             error: error.message
         });
@@ -174,6 +184,7 @@ exports.updateInvoice = async (req, res) => {
 
     res.json(updatedInvoice);
   } catch (error) {
+      console.error("UPDATE INVOICE ERROR:", error);
     res
       .status(500)
       .json({ message: "Error updating invoice", error: error.message });
@@ -202,7 +213,9 @@ exports.deleteInvoice = async (req, res) => {
       message: "Invoice deleted successfully",
     });
   } catch (error) {
+      console.error("DELETE INVOICE ERROR:", error);
     res.status(500).json({
+      
       message: "Error deleting invoice",
       error: error.message,
     });

@@ -5,6 +5,9 @@ import { Loader2, Trash2, Edit, Search, FileText, Plus, AlertCircle, Sparkles, M
 import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
 import Button from '../../components/ui/Button';
+import CreateWithAIModel from '../../components/Invoices/CreateWithAIModel';
+import ReminderModal from '../../components/Invoices/ReminderModal';
+
 
 const AllInvoices = () => {
     const [invoices, setInvoices] = useState([]);
@@ -87,7 +90,9 @@ const AllInvoices = () => {
 
     return (
         <div className="space-y-6">
-            {/* Modals */}
+            <CreateWithAIModel isOpen={isAiModalOpen} onClose={() => setIsAiModalOpen(false)} />
+            <ReminderModal isOpen={isReminderModalOpen} onClose={() => setIsReminderModalOpen(false)} selectedInvoiceId={selectedInvoiceId} />
+
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                     <h1 className="text-2xl font-semibold text-slate-900">All Invoices</h1>
@@ -205,7 +210,7 @@ const AllInvoices = () => {
                                                 >
                                                     {invoice.status === 'Paid' ? 'Mark Unpaid' : 'Mark Paid'}
                                                 </Button>
-                                                <Button size="small" variant="ghost" onClick={() => navigate(`/invoices/${invoice._id}/edit`)}>
+                                                <Button size="small" variant="ghost" onClick={() => navigate(`/invoices/${invoice._id}`)}>
                                                     <Edit className="w-4 h-4" />
                                                 </Button>
                                                 <Button size="small" variant="ghost" onClick={() => handleDelete(invoice._id)}>
