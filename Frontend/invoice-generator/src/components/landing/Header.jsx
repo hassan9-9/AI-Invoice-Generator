@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Button from "../ui/Button";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { Navigate } from "react-router-dom";
 
 const Header = () => {
   // const isAuthenticated = false;
@@ -34,14 +35,14 @@ const Header = () => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
-          <div className="flex items-center space-x-2">
+          <Link to="/" className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-blue-900 rounded-md flex items-center justify-center">
               <FileText className="w-4 h-4 text-white" />
             </div>
             <span className="text-xl font-bold text-gray-900">
               AI Invoice App
             </span>
-          </div>
+          </Link>
 
           <div className="hidden lg:flex lg:items-center lg:space-x-8 absolute left-1/2 transform -translate-x-1/2 transition-all duration-700">
             <a

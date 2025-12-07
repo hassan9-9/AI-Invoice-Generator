@@ -27,6 +27,12 @@ const invoiceSchema = new mongoose.Schema(
             type: Date,
             required: true,
         },
+        billFrom: {
+            businessName: String,
+            email: String,
+            address: String,
+            phone: String,
+        },
         billTo: {
             clientName: String,
             email: String,
@@ -46,9 +52,9 @@ const invoiceSchema = new mongoose.Schema(
             enum: ["Paid", "Unpaid"],
             default: "Unpaid",
         },
-        Subtotal: Number,
+        subtotal: Number,
         taxTotal: Number,
-        totalAmount: Number,
+        total: Number,
     },
     {
         timestamps: true, // Adds createdAt and updatedAt fields

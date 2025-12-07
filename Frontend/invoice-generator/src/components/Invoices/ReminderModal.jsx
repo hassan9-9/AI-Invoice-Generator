@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Loader2, Mail, Copy, Check } from 'lucide-react';
 import Button from '../ui/Button';
-// import TextareaField from '../ui/TextareaField';
+import TextareaField from '../ui/TextareaField';
 import axiosInstance from '../../utils/axiosInstance';
 import { API_PATHS } from '../../utils/apiPaths';
 import toast from 'react-hot-toast';
@@ -54,14 +54,14 @@ const ReminderModal = ({ isOpen, onClose, invoiceId }) => {
                 </div>
                 
                 <div className="mb-4">
-                    {/* <TextareaField
+                    <TextareaField
                         label="Reminder Text"
                         value={reminderText}
                         onChange={(e) => setReminderText(e.target.value)}
                         placeholder="Generating reminder text..."
                         rows={8}
                         disabled={isLoading}
-                    /> */}
+                    />
                 </div>
 
                 <div className="flex justify-end space-x-2">

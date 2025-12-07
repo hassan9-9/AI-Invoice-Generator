@@ -2,23 +2,40 @@ import { Navigate, Outlet } from "react-router-dom";
 import DashboardLayout from "../layout/DashboardLayout";
 import { useAuth } from "../../context/AuthContext";
 
-
-
 const ProtectedRoute = ({ children }) => {
-
-  
-  
   // will integrate these values later
   // const isAuthenticated = true
   // const loading = false
   const { isAuthenticated, loading } = useAuth();
 
-  if (loading) {
-    // You can render a loading spinner here
-    return <div>Loading...</div>;
+  console.log("🛡️ ProtectedRoute - Auth:", { isAuthenticated, loading });
+
+   if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div>Loading...</div>
+      </div>
+    );
   }
 
-  if (!loading && !isAuthenticated) {
+  // if (!loading && !isAuthenticated) {
+  //   return <Navigate to="/login" replace />;
+  // }
+
+  // fixed version;
+
+   // Check both context and localStorage as backup
+  const token = localStorage.getItem('token');
+  const actuallyAuthenticated = isAuthenticated || !!token;
+
+  console.log("🛡️ ProtectedRoute - Final check:", { 
+    contextAuth: isAuthenticated, 
+    hasToken: !!token,
+    actuallyAuthenticated 
+  });
+
+  if (!actuallyAuthenticated) {
+    console.log("🛡️ Redirecting to login...");
     return <Navigate to="/login" replace />;
   }
 
