@@ -106,7 +106,7 @@ exports.getInvoices = async (req, res) => {
     // Only get invoices for the authenticated user
     const invoices = await Invoice.find({ user: req.user._id });
     
-    console.log(`Found ${invoices.length} invoices for user: ${req.user._id}`);
+    console.log(`Found ${invoices.length} invoices for user: ${req.user._id} ${req.user.email}`);
     
     // Debug: Check for invoices without _id
     const invoicesWithoutId = invoices.filter(inv => !inv._id);

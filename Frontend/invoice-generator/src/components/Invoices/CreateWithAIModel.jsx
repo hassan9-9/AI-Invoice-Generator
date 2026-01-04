@@ -20,17 +20,25 @@ const CreateWithAIModal = ({ isOpen, onClose }) => {
 
     setIsLoading(true);
     try {
-      const response = await axiosInstance.post(API_PATHS.CREATE_INVOICE_AI, {
-        description: text,
-      });
+      const response = await axiosInstance.post(
+        API_PATHS.AI.PARSE_INVOICE_TEXT,
+        { text }
+        // text: text
+      );
 
-      toast.success("Invoice created successfully!");
+      const invoiceData = response.data;
+      console.log("Parsed Invoice Data:", invoiceData);
+
+      toast.success("Invoice data extracted successfully!");
       onClose();
-      // Navigate to the newly created invoice or invoices list
-      navigate(`/invoices/${response.data.id}`);
+
+      // Navigate to create invoice page with the parsed data
+      navigate("/invoices/new", {
+        state: { aiData: invoiceData },
+      });
     } catch (error) {
-      console.error("Error creating invoice:", error);
-      toast.error("Failed to create invoice. Please try again.");
+      toast.error("Failed to generate invoice from text!");
+      console.error("AI parsing error:", error);
     } finally {
       setIsLoading(false);
     }
@@ -40,10 +48,10 @@ const CreateWithAIModal = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
-      <div className="flex items-center justify-center min-h-screen px-4 text-center">
+      <div className="flex items-center justify-center min-h-screen px-4 text-center ">
         {/* Backdrop */}
         <div
-          className="fixed inset-0 bg-black/10 bg-opacity-50 transition-opacity"
+          className="fixed inset-0 bg-black/50 bg-opacity-50 transition-opacity"
           onClick={onClose}
         />
 
@@ -86,13 +94,15 @@ const CreateWithAIModal = ({ isOpen, onClose }) => {
               Cancel
             </Button>
             <Button
+              variant="primary"
               onClick={handleGenerate}
               disabled={isLoading || !text.trim()}
               loading={isLoading}
-              className="flex items-center"
+              // className="flex items-center"
             >
               <Sparkles className="w-4 h-4 mr-2" />
-              Generate Invoice
+              {/* Generate Invoice */}
+              {isLoading ? "Generating..." : "Generate Invoice"}
             </Button>
           </div>
         </div>

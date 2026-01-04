@@ -17,6 +17,8 @@ import { useNavigate } from "react-router-dom";
 import Button from "../../components/ui/Button";
 import CreateWithAIModel from "../../components/Invoices/CreateWithAIModel";
 import ReminderModal from "../../components/Invoices/ReminderModal";
+import DeleteConfirmDialog from "../../components/Invoices/DeleteConfirmDialog";
+// import { version } from "mongoose";
 
 const AllInvoices = () => {
   const [invoices, setInvoices] = useState([]);
@@ -28,6 +30,11 @@ const AllInvoices = () => {
   const [isAiModalOpen, setIsAiModalOpen] = useState(false);
   const [isReminderModalOpen, setIsReminderModalOpen] = useState(false);
   const [selectedInvoiceId, setSelectedInvoiceId] = useState(null);
+  const [deleteDialog, setDeleteDialog] = useState({
+    isOpen: false,
+    invoice: null,
+  });
+  const [deleteLoading, setDeleteLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -75,15 +82,43 @@ const AllInvoices = () => {
     });
   }, [invoices, searchTerm, statusFilter]);
 
-  const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this invoice?")) {
-      try {
-        await axiosInstance.delete(API_PATHS.INVOICE.DELETE_INVOICE(id));
-        setInvoices(invoices.filter((invoice) => invoice._id !== id));
-      } catch (err) {
-        setError("Failed to delete invoice.");
-        console.error(err);
-      }
+  // old delete function
+  // const handleDelete = async (id) => {
+  //   if (window.confirm("Are you sure you want to delete this invoice?")) {
+  //     try {
+  //       await axiosInstance.delete(API_PATHS.INVOICE.DELETE_INVOICE(id));
+  //       setInvoices(invoices.filter((invoice) => invoice._id !== id));
+  //     } catch (err) {
+  //       setError("Failed to delete invoice.");
+  //       console.error(err);
+  //     }
+  //   }
+  // };
+
+  // new delete function
+  // const handleDelete = async (id) => {};
+
+  const handleDeleteClick = (invoice) => {
+    setDeleteDialog({ isOpen: true, invoice });
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteDialog.invoice) return;
+
+    setDeleteLoading(true);
+    try {
+      await axiosInstance.delete(
+        API_PATHS.INVOICE.DELETE_INVOICE(deleteDialog.invoice._id)
+      );
+      setInvoices(
+        invoices.filter((invoice) => invoice._id !== deleteDialog.invoice._id)
+      );
+      setDeleteDialog({ isOpen: false, invoice: null });
+    } catch (err) {
+      setError("Failed to delete invoice.");
+      console.error(err);
+    } finally {
+      setDeleteLoading(false);
     }
   };
 
@@ -131,7 +166,14 @@ const AllInvoices = () => {
       <ReminderModal
         isOpen={isReminderModalOpen}
         onClose={() => setIsReminderModalOpen(false)}
-        selectedInvoiceId={selectedInvoiceId}
+        invoiceId={selectedInvoiceId}
+      />
+      <DeleteConfirmDialog
+        isOpen={deleteDialog.isOpen}
+        onClose={() => setDeleteDialog({ isOpen: false, invoice: null })}
+        onConfirm={handleDeleteConfirm}
+        invoiceNumber={deleteDialog.invoice?.invoiceNumber}
+        isLoading={deleteLoading}
       />
 
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -309,7 +351,7 @@ const AllInvoices = () => {
                         <Button
                           size="small"
                           variant="ghost"
-                          onClick={() => handleDelete(invoice._id)}
+                          onClick={() => handleDeleteClick(invoice)}
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>

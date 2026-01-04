@@ -119,11 +119,11 @@ const CreateInvoice = ({ existingInvoice, onSave }) => {
   }, [formData.items]);
 
   useEffect(() => {
-    const a1Data = location.state?.a1Data;
+    const aiData = location.state?.aiData;
 
-    if (a1Data) {
+    if (aiData) {
       setFormData((prev) => {
-        const itemsWithTotals = (a1Data.items || [{ name: "", quantity: 1, unitPrice: 0, taxPercent: 0 }])
+        const itemsWithTotals = (aiData.items || [{ name: "", quantity: 1, unitPrice: 0, taxPercent: 0 }])
           .map(item => ({
             ...item,
             total: calculateItemTotal(item.quantity, item.unitPrice)
@@ -132,10 +132,10 @@ const CreateInvoice = ({ existingInvoice, onSave }) => {
         return {
           ...prev,
           billTo: {
-            clientName: a1Data.clientName || "",
-            email: a1Data.email || "",
-            address: a1Data.address || "",
-            phone: a1Data.phone || "",
+            clientName: aiData.clientName || "",
+            email: aiData.email || "",
+            address: aiData.address || "",
+            phone: aiData.phone || "",
           },
           items: itemsWithTotals,
         };

@@ -118,6 +118,7 @@ axiosInstance.interceptors.response.use(
         !!currentToken,
         "URL:",
         error.config.url
+        
       );
 
       // Don't auto-logout - let the AuthContext handle it

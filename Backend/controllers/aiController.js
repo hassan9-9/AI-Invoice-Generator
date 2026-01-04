@@ -13,7 +13,8 @@ const parseInvoiceFromText = async (req, res) => {
   }
 
   try {
-    const prompt = `You are an expert invoice data extraction AI. Analyze the following text and extract the relevant information to create an invoice.
+    const prompt = `You are an expert invoice data extraction AI. Analyze the following text and extract the relevant information 
+    to create an invoice.
 The output MUST be a valid JSON object.
 
 The JSON object should have the following structure:
@@ -21,6 +22,7 @@ The JSON object should have the following structure:
     "clientName": "string",
     "email": "string (if available)",
     "address": "string (if available)",
+    "phone": "string (if available)",
     "items": [
         {
             "name": "string",
@@ -90,6 +92,10 @@ The tone should be friendly but clear. Keep it concise. Start the email with "Su
       model: "gemini-2.5-flash", // Use working model name
     });
 
+
+
+
+
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const responseText = response.text();
@@ -100,6 +106,11 @@ The tone should be friendly but clear. Keep it concise. Start the email with "Su
     res.status(500).json({
       message: "Failed to generate reminder email",
       details: error.message,
+
+    //   // message: error.message,
+    // stack: error.stack,
+    // invoiceId,
+    // user: req.user?.id,
     });
   }
 };

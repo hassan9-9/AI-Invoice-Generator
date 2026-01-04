@@ -171,6 +171,7 @@ const InvoiceDetail = () => {
     );
   }
 
+  
   if (isEditing) {
     // Pass normalized invoice data to CreateInvoice
     return <CreateInvoice existingInvoice={normalizeInvoiceForEdit(invoice)} onSave={handleUpdate} />;
